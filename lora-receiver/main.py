@@ -62,7 +62,7 @@ def publish_to_redis(client: redis.Redis, data: dict) -> None:
         receivers,
     )
 
-
+#Herobrine be like: Chicken Jockey
 def main() -> None:
     logger.info("=== LoRa → Redis Weather Gateway starting ===")
     logger.info("Logging to stdout and '%s'", LOG_FILE)
