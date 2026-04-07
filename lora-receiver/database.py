@@ -27,7 +27,7 @@ def init_db() -> sqlite3.Connection:
             timestamp   DATETIME DEFAULT (datetime('now','localtime')),
             temperature REAL,        -- °C
             humidity    REAL,        -- % RH
-            pressure    REAL,        -- hPa
+            pressure    REAL,        -- Pa
             pm25        REAL,        -- µg/m³
             pm10        REAL,        -- µg/m³
             aqi         INTEGER,     -- Air Quality Index score
