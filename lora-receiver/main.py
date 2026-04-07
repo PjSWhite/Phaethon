@@ -1,66 +1,15 @@
 # Entry point for the LoRa → SQLite → Redis gateway.
 
 
-import json
 import time
-import logging
-import redis
+import logger as _logger
+from redis_manager import connect_redis, publish_to_redis
 
-from config import REDIS_HOST, REDIS_PORT, REDIS_DB, REDIS_TOPIC
 from database import init_db, insert_reading
 from lora_receiver import init_lora, wait_for_packet, read_packet
 
-
-LOG_FORMAT    = "%(asctime)s  [%(levelname)s]  %(name)s — %(message)s"
-LOG_DATEFMT   = "%Y-%m-%d %H:%M:%S"
-LOG_FILE      = "receiver.log"
-
-formatter = logging.Formatter(fmt=LOG_FORMAT, datefmt=LOG_DATEFMT)
-
-# Handler 1 — stdout
-stream_handler = logging.StreamHandler()
-stream_handler.setFormatter(formatter)
-
-# Handler 2 — log file
-file_handler = logging.FileHandler(LOG_FILE, mode="a", encoding="utf-8")
-file_handler.setFormatter(formatter)
-
-logging.basicConfig(level=logging.INFO, handlers=[stream_handler, file_handler])
-
-logger = logging.getLogger("main")
-
-
-def connect_redis() -> redis.Redis:
-    """
-    Create and verify a connection to the Redis server.
-    Raises redis.ConnectionError if the server is unreachable.
-    """
-    client = redis.Redis(
-        host=REDIS_HOST,
-        port=REDIS_PORT,
-        db=REDIS_DB,
-        decode_responses=True,
-    )
-    client.ping()
-    logger.info(
-        "Connected to Redis at %s:%d (db=%d)",
-        REDIS_HOST, REDIS_PORT, REDIS_DB
-    )
-    return client
-
-
-def publish_to_redis(client: redis.Redis, data: dict) -> None:
-    """
-    Serialize `data` to JSON and publish it on the
-    configured Redis topic (channel).
-    """
-    payload_json = json.dumps(data)
-    receivers = client.publish(REDIS_TOPIC, payload_json)
-    logger.info(
-        "Published to Redis channel '%s' → %d subscriber(s) received it",
-        REDIS_TOPIC,
-        receivers,
-    )
+logger = _logger.setup_logger()
+LOG_FILE = _logger.LOG_FILE
 
 #Herobrine be like: Chicken Jockey
 def main() -> None:
