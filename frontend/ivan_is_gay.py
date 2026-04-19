@@ -62,7 +62,7 @@ def label(x, y, text='Empty Text...', color='black') -> tk.Label:
 labels: dict = {
 	"temperature": "Temperature: {} °C",
 	"humidity": "Humidity: {}%",
-	"pressure": "Air Pressure: {} hPa",
+	"pressure": "Air Pressure: {} Pa",
 	"wind_speed": "Wind Speed: {} m/s",
 	"wind_direction": "Wind Direction: {}",
 	"precipitation": "Precipation: {} mm",
